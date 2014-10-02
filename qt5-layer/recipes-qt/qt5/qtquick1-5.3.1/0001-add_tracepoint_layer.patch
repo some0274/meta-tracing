@@ -1,8 +1,8 @@
-Index: qtquick1-opensource-src-5.3.1/src/declarative/declarative.pro
-===================================================================
---- qtquick1-opensource-src-5.3.1.orig/src/declarative/declarative.pro	2014-06-19 15:37:54.000000000 +0530
-+++ qtquick1-opensource-src-5.3.1/src/declarative/declarative.pro	2014-08-28 13:12:22.956250168 +0530
-@@ -27,6 +27,7 @@
+diff --git a/src/declarative/declarative.pro b/src/declarative/declarative.pro
+index 70bfd35..f2db3b5 100644
+--- a/src/declarative/declarative.pro
++++ b/src/declarative/declarative.pro
+@@ -27,6 +27,7 @@ include(qml/qml.pri)
  include(util/util.pri)
  include(graphicsitems/graphicsitems.pri)
  include(debugger/debugger.pri)
@@ -10,10 +10,10 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/declarative.pro
  
  HEADERS += \
      qtdeclarativeglobal.h \
-Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativebinding.cpp
-===================================================================
---- qtquick1-opensource-src-5.3.1.orig/src/declarative/qml/qdeclarativebinding.cpp	2014-06-19 15:37:54.000000000 +0530
-+++ qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativebinding.cpp	2014-08-28 13:21:03.453706628 +0530
+diff --git a/src/declarative/qml/qdeclarativebinding.cpp b/src/declarative/qml/qdeclarativebinding.cpp
+index cdfb5ce..5b1e16c 100644
+--- a/src/declarative/qml/qdeclarativebinding.cpp
++++ b/src/declarative/qml/qdeclarativebinding.cpp
 @@ -55,6 +55,10 @@
  #include <QVariant>
  #include <QtCore/qdebug.h>
@@ -25,7 +25,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativebinding.cpp
  QT_BEGIN_NAMESPACE
  
  QDeclarativeAbstractBinding::QDeclarativeAbstractBinding()
-@@ -338,6 +342,10 @@
+@@ -338,6 +342,10 @@ void QDeclarativeBinding::update(QDeclarativePropertyPrivate::WriteFlags flags)
          return;
  
      if (!d->updating) {
@@ -36,7 +36,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativebinding.cpp
          QDeclarativeBindingProfiler prof(this);
          d->updating = true;
          bool wasDeleted = false;
-@@ -355,8 +363,13 @@
+@@ -355,8 +363,13 @@ void QDeclarativeBinding::update(QDeclarativePropertyPrivate::WriteFlags flags)
                                    QMetaObject::WriteProperty,
                                    idx, a);
  
@@ -51,7 +51,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativebinding.cpp
  
          } else {
              QDeclarativeEnginePrivate *ep = QDeclarativeEnginePrivate::get(d->context()->engine);
-@@ -365,8 +378,13 @@
+@@ -365,8 +378,13 @@ void QDeclarativeBinding::update(QDeclarativePropertyPrivate::WriteFlags flags)
              QVariant value;
  
              QScriptValue scriptValue = d->scriptValue(0, &isUndefined);
@@ -66,7 +66,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativebinding.cpp
  
              if (d->property.propertyTypeCategory() == QDeclarativeProperty::List) {
                  value = ep->scriptValueToVariant(scriptValue, qMetaTypeId<QList<QObject *> >());
-@@ -421,8 +439,13 @@
+@@ -421,8 +439,13 @@ void QDeclarativeBinding::update(QDeclarativePropertyPrivate::WriteFlags flags)
              } else if (d->property.object() &&
                         !QDeclarativePropertyPrivate::write(d->property, value, flags)) {
  
@@ -81,21 +81,21 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativebinding.cpp
  
                  QUrl url = QUrl(d->url);
                  int line = d->line;
-@@ -440,8 +463,12 @@
-                                         QLatin1String(QMetaType::typeName(d->property.propertyType())));
+@@ -441,7 +464,13 @@ void QDeclarativeBinding::update(QDeclarativePropertyPrivate::WriteFlags flags)
              }
  
--            if (wasDeleted)
-+            if (wasDeleted) {
+             if (wasDeleted)
++            {
 +#ifdef ENABLE_SA_TRACE
 +                qt_tracepoint(Qt, qtQmlFrameBind, 0, qPrintable(d->url));
 +#endif // ENABLE_SA_TRACE
++
                  return;
 +            }
  
              if (d->error.isValid()) {
                 if (!d->addError(ep)) ep->warning(this->error());
-@@ -452,6 +479,10 @@
+@@ -452,6 +481,10 @@ void QDeclarativeBinding::update(QDeclarativePropertyPrivate::WriteFlags flags)
  
          d->updating = false;
          d->deleted = 0;
@@ -106,10 +106,10 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativebinding.cpp
      } else {
          qmlInfo(d->property.object()) << tr("Binding loop detected for property \"%1\"").arg(d->property.name());
      }
-Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecompiledbindings.cpp
-===================================================================
---- qtquick1-opensource-src-5.3.1.orig/src/declarative/qml/qdeclarativecompiledbindings.cpp	2014-06-19 15:37:54.000000000 +0530
-+++ qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecompiledbindings.cpp	2014-08-28 13:24:08.143384765 +0530
+diff --git a/src/declarative/qml/qdeclarativecompiledbindings.cpp b/src/declarative/qml/qdeclarativecompiledbindings.cpp
+index 5546a5e..0f3fd14 100644
+--- a/src/declarative/qml/qdeclarativecompiledbindings.cpp
++++ b/src/declarative/qml/qdeclarativecompiledbindings.cpp
 @@ -57,6 +57,10 @@
  #include <private/qdeclarativefastproperties_p.h>
  #include <private/qdeclarativedebugtrace_p.h>
@@ -121,7 +121,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecompiledbin
  QT_BEGIN_NAMESPACE
  
  DEFINE_BOOL_CONFIG_OPTION(qmlExperimental, QML_EXPERIMENTAL);
-@@ -379,6 +383,10 @@
+@@ -379,6 +383,10 @@ void QDeclarativeCompiledBindingsPrivate::run(Binding *binding, QDeclarativeProp
      if (!context || !context->isValid()) 
          return;
  
@@ -132,7 +132,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecompiledbin
      if (binding->updating) {
          QString name;
          if (binding->property & 0xFFFF0000) {
-@@ -394,6 +402,11 @@
+@@ -394,6 +402,11 @@ void QDeclarativeCompiledBindingsPrivate::run(Binding *binding, QDeclarativeProp
              name = QLatin1String(binding->target->metaObject()->property(binding->property).name());
          }
          qmlInfo(binding->target) << QCoreApplication::translate("QDeclarativeCompiledBindings", "Binding loop detected for property \"%1\"").arg(name);
@@ -144,7 +144,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecompiledbin
          return;
      }
  
-@@ -413,6 +426,10 @@
+@@ -413,6 +426,10 @@ void QDeclarativeCompiledBindingsPrivate::run(Binding *binding, QDeclarativeProp
          run(binding->index, context, binding, binding->scope, binding->target, flags);
      }
      binding->updating = false;
@@ -155,10 +155,10 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecompiledbin
  }
  
  namespace {
-Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecomponent.cpp
-===================================================================
---- qtquick1-opensource-src-5.3.1.orig/src/declarative/qml/qdeclarativecomponent.cpp	2014-06-19 15:37:54.000000000 +0530
-+++ qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecomponent.cpp	2014-08-28 13:27:21.020959966 +0530
+diff --git a/src/declarative/qml/qdeclarativecomponent.cpp b/src/declarative/qml/qdeclarativecomponent.cpp
+index cbf23fa..226473c 100644
+--- a/src/declarative/qml/qdeclarativecomponent.cpp
++++ b/src/declarative/qml/qdeclarativecomponent.cpp
 @@ -62,6 +62,10 @@
  #include <QApplication>
  #include <qdeclarativeinfo.h>
@@ -170,7 +170,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecomponent.c
  QT_BEGIN_NAMESPACE
  
  class QByteArray;
-@@ -850,6 +854,10 @@
+@@ -850,6 +854,10 @@ QObject * QDeclarativeComponentPrivate::begin(QDeclarativeContextData *parentCon
      Q_ASSERT((state != 0) ^ (errors != 0)); // One of state or errors (but not both) must be provided
  
      if (isRoot) {
@@ -181,7 +181,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecomponent.c
          QDeclarativeDebugTrace::startRange(QDeclarativeDebugTrace::Creating);
          QDeclarativeDebugTrace::rangeData(QDeclarativeDebugTrace::Creating, component->url);
      }
-@@ -1044,6 +1052,10 @@
+@@ -1044,6 +1052,10 @@ void QDeclarativeComponentPrivate::completeCreate()
          complete(ep, &state);
  
          QDeclarativeDebugTrace::endRange(QDeclarativeDebugTrace::Creating);
@@ -192,10 +192,10 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativecomponent.c
      }
  }
  
-Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativeengine.cpp
-===================================================================
---- qtquick1-opensource-src-5.3.1.orig/src/declarative/qml/qdeclarativeengine.cpp	2014-06-19 15:37:54.000000000 +0530
-+++ qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativeengine.cpp	2014-08-28 13:29:35.247272512 +0530
+diff --git a/src/declarative/qml/qdeclarativeengine.cpp b/src/declarative/qml/qdeclarativeengine.cpp
+index c7fc386..2f6ba37 100644
+--- a/src/declarative/qml/qdeclarativeengine.cpp
++++ b/src/declarative/qml/qdeclarativeengine.cpp
 @@ -113,6 +113,11 @@
  #define CSIDL_APPDATA		0x001a	// <username>\Application Data
  #endif
@@ -208,17 +208,18 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativeengine.cpp
  Q_DECLARE_METATYPE(QDeclarativeProperty)
  Q_DECLARE_METATYPE(QScriptValue)
  
-@@ -1023,6 +1028,9 @@
+@@ -1023,6 +1028,10 @@ void qmlExecuteDeferred(QObject *object)
      QDeclarativeData *data = QDeclarativeData::get(object);
  
      if (data && data->deferredComponent) {
 +#ifdef ENABLE_SA_TRACE
 +        qt_tracepoint(Qt, qtQmlFrameCreate, 1, qPrintable(data->outerContext->url.toString()));
 +#endif // ENABLE_SA_TRACE
++
          if (QDeclarativeDebugService::isDebuggingEnabled()) {
              QDeclarativeDebugTrace::startRange(QDeclarativeDebugTrace::Creating);
              QDeclarativeType *type = QDeclarativeMetaType::qmlType(object->metaObject());
-@@ -1041,6 +1049,10 @@
+@@ -1041,6 +1050,10 @@ void qmlExecuteDeferred(QObject *object)
  
          QDeclarativeComponentPrivate::complete(ep, &state);
          QDeclarativeDebugTrace::endRange(QDeclarativeDebugTrace::Creating);
@@ -229,10 +230,10 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativeengine.cpp
      }
  }
  
-Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativetypeloader.cpp
-===================================================================
---- qtquick1-opensource-src-5.3.1.orig/src/declarative/qml/qdeclarativetypeloader.cpp	2014-06-19 15:37:54.000000000 +0530
-+++ qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativetypeloader.cpp	2014-08-28 13:35:59.166445994 +0530
+diff --git a/src/declarative/qml/qdeclarativetypeloader.cpp b/src/declarative/qml/qdeclarativetypeloader.cpp
+index 42847ea..09ea93b 100644
+--- a/src/declarative/qml/qdeclarativetypeloader.cpp
++++ b/src/declarative/qml/qdeclarativetypeloader.cpp
 @@ -53,6 +53,10 @@
  #include <QtCore/qdiriterator.h>
  #include <QtCore/qfile.h>
@@ -244,7 +245,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativetypeloader.
  QT_BEGIN_NAMESPACE
  
  /*
-@@ -528,12 +532,21 @@
+@@ -528,14 +532,24 @@ void QDeclarativeDataLoader::load(QDeclarativeDataBlob *blob)
  
      QString lf = QDeclarativeEnginePrivate::urlToLocalFileOrQrc(blob->m_url);
  
@@ -265,8 +266,11 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativetypeloader.
 +
              return;
          }
++
          QFile file(lf);
-@@ -544,6 +557,10 @@
+         if (file.open(QFile::ReadOnly)) {
+             QByteArray data = file.readAll();
+@@ -544,6 +558,10 @@ void QDeclarativeDataLoader::load(QDeclarativeDataBlob *blob)
              blob->downloadProgressChanged(1.);
  
              setData(blob, data);
@@ -277,7 +281,7 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativetypeloader.
          } else {
              blob->networkError(QNetworkReply::ContentNotFoundError);
          }
-@@ -602,6 +619,10 @@
+@@ -602,6 +620,10 @@ void QDeclarativeDataLoader::networkReplyFinished(QNetworkReply *reply)
          setData(blob, data);
      }
  
@@ -288,18 +292,18 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativetypeloader.
      blob->release();
  }
  
-@@ -922,6 +943,10 @@
+@@ -922,6 +944,10 @@ void QDeclarativeTypeData::unregisterCallback(TypeDataCallback *callback)
  
  void QDeclarativeTypeData::done()
  {
 +#ifdef ENABLE_SA_TRACE
-+       qt_tracepoint(Qt, qtQmlResourceLoad, 0, qPrintable(finalUrl().toString()));
++	qt_tracepoint(Qt, qtQmlResourceLoad, 0, qPrintable(finalUrl().toString()));
 +#endif // ENABLE_SA_TRACE
 +
      addref();
  
      // Check all script dependencies for errors
-@@ -1034,6 +1059,11 @@
+@@ -1034,6 +1060,11 @@ void QDeclarativeTypeData::downloadProgressChanged(qreal p)
  void QDeclarativeTypeData::compile()
  {
      Q_ASSERT(m_compiledData == 0);
@@ -311,14 +315,14 @@ Index: qtquick1-opensource-src-5.3.1/src/declarative/qml/qdeclarativetypeloader.
      QDeclarativeDebugTrace::startRange(QDeclarativeDebugTrace::Compiling);
  
      m_compiledData = new QDeclarativeCompiledData(typeLoader()->engine());
-@@ -1046,6 +1076,10 @@
-         setError(compiler.errors());
-         m_compiledData->release();
+@@ -1048,6 +1079,10 @@ void QDeclarativeTypeData::compile()
          m_compiledData = 0;
+     }
+     QDeclarativeDebugTrace::endRange(QDeclarativeDebugTrace::Compiling);
 +
 +#ifdef ENABLE_SA_TRACE
 +    qt_tracepoint(Qt, qtQmlFrameCompile, 0, qPrintable(finalUrl().toString()));
 +#endif // ENABLE_SA_TRACE
-     }
-     QDeclarativeDebugTrace::endRange(QDeclarativeDebugTrace::Compiling);
  }
+ 
+ void QDeclarativeTypeData::resolveTypes()
