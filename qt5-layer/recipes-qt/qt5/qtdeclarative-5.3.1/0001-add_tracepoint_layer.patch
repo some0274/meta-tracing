@@ -8,7 +8,7 @@ index 17d35f8..6ef177b 100644
  include(types/types.pri)
 +contains(QT_CONFIG,tracesupport):CONFIG += tracesupport
 diff --git a/src/qml/qml/qqmlbinding.cpp b/src/qml/qml/qqmlbinding.cpp
-index 571d783..e5e54c0 100644
+index 571d783..43b2047 100644
 --- a/src/qml/qml/qqmlbinding.cpp
 +++ b/src/qml/qml/qqmlbinding.cpp
 @@ -56,6 +56,10 @@
@@ -27,7 +27,7 @@ index 571d783..e5e54c0 100644
  
      if (!updatingFlag()) {
 +#ifdef ENABLE_SA_TRACE
-+        qt_tracepoint(Qt, qtQmlFrameBind, 1, qPrintable(m_url));
++        qt_tracepoint(Qt, qtQmlFrameBind, 1, qPrintable(url));
 +#endif // ENABLE_SA_TRACE
 +
          QQmlBindingProfiler prof(ep->profiler, url, lineNo, columnNo);
@@ -39,7 +39,7 @@ index 571d783..e5e54c0 100644
              setUpdatingFlag(false);
 +
 +#ifdef ENABLE_SA_TRACE
-+        qt_tracepoint(Qt, qtQmlFrameBind, 0, qPrintable(m_url));
++        qt_tracepoint(Qt, qtQmlFrameBind, 0, qPrintable(url));
 +#endif // ENABLE_SA_TRACE
      } else {
          QQmlProperty p = property();
